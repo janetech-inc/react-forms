@@ -59,7 +59,7 @@ const App = ({ classes, dataAsString }: AppProps) => {
 
       {tabIdx === 0 &&
         <Grid container justify={'center'} spacing={1} className={classes.container}>
-          <Grid item sm={6}>
+          <Grid item sm={12}>
             <Typography
               variant={'h3'}
               className={classes.title}
@@ -70,7 +70,7 @@ const App = ({ classes, dataAsString }: AppProps) => {
               <pre id="boundData">{dataAsString}</pre>
             </div>
           </Grid>
-          <Grid item sm={6}>
+          <Grid item sm={12}>
             <Typography
               variant={'h3'}
               className={classes.title}
