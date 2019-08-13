@@ -1,0 +1,35 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "label": false,
+        "scope": "#/properties/id"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/name"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/designer"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/season"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/link"
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/media"
+          }
+        ]
+      }
+    ]
+  }

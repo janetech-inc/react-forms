@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type":"integer"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "designer": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "season": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "link": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "primary_image": {
+          "type": "object",
+          "properties" : {
+            "default": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "red": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        },
+        "video": {
+          "type": "object",
+          "properties" : {
+            "desktop_src": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "cue_points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "message": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    
+  ]
+}
