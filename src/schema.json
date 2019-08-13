@@ -48,11 +48,15 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "date": {
+                  "time": {
                     "type": "string",
-                    "format": "date"
+                    "maxLength": 10
                   },
-                  "message": {
+                  "title": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "thumbnail": {
                     "type": "string",
                     "maxLength": 200
                   }
@@ -64,7 +68,5 @@
       }
     }
   },
-  "required": [
-    
-  ]
+  "required": []
 }
