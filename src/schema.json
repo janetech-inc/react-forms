@@ -18,7 +18,7 @@
     },
     "link": {
       "type": "string",
-      "maxLength": 200
+      "maxLength": 500
     },
     "media": {
       "type": "object",
@@ -28,20 +28,24 @@
           "properties" : {
             "default": {
               "type": "string",
-              "maxLength": 200
+              "maxLength": 500
             },
             "red": {
               "type": "string",
-              "maxLength": 200
+              "maxLength": 500
             }
           }
         },
         "video": {
           "type": "object",
           "properties" : {
+            "poster": {
+              "type": "string",
+              "maxLength": 500
+            },
             "desktop_src": {
               "type": "string",
-              "maxLength": 200
+              "maxLength": 500
             },
             "cue_points": {
               "type": "array",
@@ -58,7 +62,13 @@
                   },
                   "thumbnail": {
                     "type": "string",
-                    "maxLength": 200
+                    "maxLength": 500
+                  },
+                  "look_ids": {
+                    "type": "array",
+                    "items": {
+                      "type":"integer"
+                    }
                   }
                 }
               }
