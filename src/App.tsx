@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import {getData, JsonFormsState} from '@jsonforms/core';
-import { JsonForms, JsonFormsDispatch, JsonFormsReduxContext } from '@jsonforms/react';
+import { JsonFormsDispatch, JsonFormsReduxContext } from '@jsonforms/react';
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
@@ -9,9 +9,8 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import { Tabs, Tab } from '@material-ui/core';
 import logo from './logo.svg';
 import './App.css';
-import schema from './schema.json';
-import uischema from './uischema.json';
-import { materialRenderers } from '@jsonforms/material-renderers';
+
+import axios from "axios/index";
 
 const styles = createStyles({
   container: {
@@ -26,6 +25,7 @@ const styles = createStyles({
     justifyContent: 'center',
     borderRadius: '0.25em',
     backgroundColor: '#cecece',
+    fontSize: '10px'
   },
   demoform: {
     margin: 'auto',
@@ -39,9 +39,52 @@ export interface AppProps extends WithStyles<typeof styles> {
 
 const App = ({ classes, dataAsString }: AppProps) => {
   const [tabIdx, setTabIdx] = useState(0);
+  const [authKey, setAuthKey] = useState('')
+
+  const BASE_URL = 'http://localhost:9000/1.0/collections'
+
   function handleTabChange(event: any, newValue: number) {
     setTabIdx(newValue);
   }
+
+  function onCreateCollection() {
+    var data = JSON.parse(dataAsString);
+    data.active = false;
+    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authKey}` }
+
+    axios.post(`${BASE_URL}`, data, {
+      headers: headers
+    })
+    .then(function (response) {
+      console.log(response);
+      
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  }
+
+  function onLoadCollection() {
+    var data = JSON.parse(dataAsString);
+    if (data != null && data.id != null) {
+
+      const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authKey}` }
+
+      axios.get(`${BASE_URL}/${data.id}` , {
+        headers: headers
+      })
+      .then(function (response) {
+        console.log(response);
+        
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    }
+  }
+
   return (
     <Fragment>
       <div className="App">
@@ -54,7 +97,6 @@ const App = ({ classes, dataAsString }: AppProps) => {
 
       <Tabs value={tabIdx} onChange={handleTabChange}>
         <Tab label="via Redux" />
-        <Tab label="Standalone" />
       </Tabs>
 
       {tabIdx === 0 &&
@@ -62,8 +104,7 @@ const App = ({ classes, dataAsString }: AppProps) => {
           <Grid item sm={12}>
             <Typography
               variant={'h3'}
-              className={classes.title}
-            >
+              className={classes.title} >
               Bound data
             </Typography>
             <div className={classes.dataContent}>
@@ -71,10 +112,14 @@ const App = ({ classes, dataAsString }: AppProps) => {
             </div>
           </Grid>
           <Grid item sm={12}>
-            <Typography
-              variant={'h3'}
-              className={classes.title}
-            >
+          <h3>Authorization Token</h3>
+            <br/>
+            <textarea rows={4} cols={100} onChange={event => setAuthKey(event.target.value)}/>
+            <br/>
+            {/* <button onClick={onLoadCollection}>Load collection by Id</button> */}
+            <br/>
+
+            <Typography variant={'h3'} className={classes.title}>
               Rendered form
             </Typography>
             <div className={classes.demoform} id="form">
@@ -85,28 +130,18 @@ const App = ({ classes, dataAsString }: AppProps) => {
           </Grid>
         </Grid>
       }
-      {tabIdx === 1 &&
-        <div className={classes.demoform} style={{ maxWidth: 1000 }}>
-          <JsonForms
-            schema={schema}
-            uischema={uischema}
-            data
-            renderers={materialRenderers}
-          />
-          <JsonForms
-            schema={schema}
-            uischema={uischema}
-            data
-            renderers={materialRenderers}
-          />
-        </div>
-      }
+
+      <button onClick={() => onCreateCollection()}>
+        Update
+      </button>
     </Fragment>
   );
 };
 
 const mapStateToProps = (state: JsonFormsState) => {
-  return { dataAsString: JSON.stringify(getData(state), null, 2) }
+  return { 
+    dataAsString: JSON.stringify(getData(state), null, 2)
+  }
 };
 
 export default connect(mapStateToProps)(withStyles(styles)(App));

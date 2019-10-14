@@ -8,9 +8,18 @@
       "type": "string",
       "maxLength": 200
     },
-    "designer": {
+    "designer_id": {
+      "type":"integer"
+    },
+    "per_row": {
+      "type":"integer"
+    },
+    "dark_theme": {
+      "type":"integer"
+    },
+    "currency": {
       "type": "string",
-      "maxLength": 200
+      "maxLength": 4
     },
     "season": {
       "type": "string",

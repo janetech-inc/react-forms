@@ -3,7 +3,7 @@
     "elements": [
       {
         "type": "Control",
-        "label": false,
+        "label": true,
         "scope": "#/properties/id"
       },
       {
@@ -12,7 +12,22 @@
       },
       {
         "type": "Control",
-        "scope": "#/properties/designer"
+        "label": true,
+        "scope": "#/properties/designer_id"
+      },
+      {
+        "type": "Control",
+        "label": true,
+        "scope": "#/properties/per_row"
+      },
+      {
+        "type": "Control",
+        "label": true,
+        "scope": "#/properties/dark_theme"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/currency"
       },
       {
         "type": "Control",
