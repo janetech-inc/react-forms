@@ -41,8 +41,10 @@ export interface AppProps extends WithStyles<typeof styles> {
 
 const App = ({ estate, classes, dataAsString }: AppProps) => {
   const [tabIdx, setTabIdx] = useState(0);
-  const [authKey, setAuthKey] = useState('');
   const [cookies, setCookie] = useCookies(['authtoken']);
+  const [authtoken, setAuthtoken] = useState('');
+  const [collectionId, setCollectionId] = useState('');
+  const [buttonRefresh, setButtonRefresh ] = useState('');
 
   const BASE_URL = 'http://localhost:9000/1.0/collections';
 
@@ -50,9 +52,10 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
     setTabIdx(newValue);
   }
 
-  function saveAuthToken(token: String) {
+  function saveAuthToken(token: string) {
     if (token !== "") {
       setCookie('authtoken', token, {path: '/'});
+      setAuthtoken(token);
     }
   }
 
@@ -87,12 +90,12 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
       delete collection.looks;
       delete collection.designer
       estate.jsonforms.core.data = collection;
-      setTabIdx(0);
     })
     .catch(function (error) {
       console.log(error);
       if (error.response.status === 401 || error.response.status === 403) {
         cookies.authtoken = null;
+        setAuthtoken(cookies.authtoken);
         alert("Refresh auth token");
       }
     });
@@ -125,11 +128,13 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
             </div>
           </Grid>
           <Grid item sm={12}>
-          <h3>Authorization Token</h3>
+          
             <br/>
-            <textarea rows={4} cols={100} onChange={event => saveAuthToken(event.target.value)}/>
+            { authtoken !== "" && 
+              <textarea rows={4} cols={100} onChange={event => saveAuthToken(event.target.value)} placeholder="Authorization Token"/>
+            }
             <br/>
-            <input onChange={event => onLoadCollection(event.target.value)} placeholder="Collection Id" />
+            <input onChange={event => onLoadCollection(event.target.value)} placeholder="Collection Id" /> <button onClick={event => setButtonRefresh("refresh")} > Load Collection </button>
             <br/>
 
             <Typography variant={'h3'} className={classes.title}>
