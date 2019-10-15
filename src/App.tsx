@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import {getData, JsonFormsState} from '@jsonforms/core';
+import { JsonFormsState, getData} from '@jsonforms/core';
 import { JsonFormsDispatch, JsonFormsReduxContext } from '@jsonforms/react';
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -9,7 +9,8 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import { Tabs, Tab } from '@material-ui/core';
 import logo from './logo.svg';
 import './App.css';
-
+import {mapDispatchToControlProps } from '@jsonforms/core';
+import { useCookies } from 'react-cookie';
 import axios from "axios/index";
 
 const styles = createStyles({
@@ -35,22 +36,30 @@ const styles = createStyles({
 
 export interface AppProps extends WithStyles<typeof styles> {
   dataAsString: string;
-}
+  estate: any;
+};
 
-const App = ({ classes, dataAsString }: AppProps) => {
+const App = ({ estate, classes, dataAsString }: AppProps) => {
   const [tabIdx, setTabIdx] = useState(0);
-  const [authKey, setAuthKey] = useState('')
+  const [authKey, setAuthKey] = useState('');
+  const [cookies, setCookie] = useCookies(['authtoken']);
 
-  const BASE_URL = 'http://localhost:9000/1.0/collections'
+  const BASE_URL = 'http://localhost:9000/1.0/collections';
 
   function handleTabChange(event: any, newValue: number) {
     setTabIdx(newValue);
   }
 
+  function saveAuthToken(token: String) {
+    if (token !== "") {
+      setCookie('authtoken', token, {path: '/'});
+    }
+  }
+
   function onCreateCollection() {
     var data = JSON.parse(dataAsString);
     data.active = false;
-    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authKey}` }
+    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.authtoken}` }
 
     axios.post(`${BASE_URL}`, data, {
       headers: headers
@@ -65,24 +74,28 @@ const App = ({ classes, dataAsString }: AppProps) => {
 
   }
 
-  function onLoadCollection() {
-    var data = JSON.parse(dataAsString);
-    if (data != null && data.id != null) {
+  function onLoadCollection(collectionId: String) {
+    if (collectionId === "" || collectionId === null) return;
 
-      const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authKey}` }
+    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.authtoken}` }
 
-      axios.get(`${BASE_URL}/${data.id}` , {
-        headers: headers
-      })
-      .then(function (response) {
-        console.log(response);
-        
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    }
+    axios.get(`${BASE_URL}/${collectionId}` , {
+      headers: headers
+    })
+    .then(function (response) {
+      let collection = response.data
+      delete collection.looks;
+      delete collection.designer
+      estate.jsonforms.core.data = collection;
+      setTabIdx(0);
+    })
+    .catch(function (error) {
+      console.log(error);
+      if (error.response.status === 401 || error.response.status === 403) {
+        cookies.authtoken = null;
+        alert("Refresh auth token");
+      }
+    });
   }
 
   return (
@@ -114,9 +127,9 @@ const App = ({ classes, dataAsString }: AppProps) => {
           <Grid item sm={12}>
           <h3>Authorization Token</h3>
             <br/>
-            <textarea rows={4} cols={100} onChange={event => setAuthKey(event.target.value)}/>
+            <textarea rows={4} cols={100} onChange={event => saveAuthToken(event.target.value)}/>
             <br/>
-            {/* <button onClick={onLoadCollection}>Load collection by Id</button> */}
+            <input onChange={event => onLoadCollection(event.target.value)} placeholder="Collection Id" />
             <br/>
 
             <Typography variant={'h3'} className={classes.title}>
@@ -130,19 +143,24 @@ const App = ({ classes, dataAsString }: AppProps) => {
           </Grid>
         </Grid>
       }
-
-      <button onClick={() => onCreateCollection()}>
-        Update
-      </button>
+      { 
+        <button onClick={() => onCreateCollection()}>
+          Create Collection
+        </button>
+      }
     </Fragment>
   );
 };
 
 const mapStateToProps = (state: JsonFormsState) => {
   return { 
-    dataAsString: JSON.stringify(getData(state), null, 2)
+    dataAsString: JSON.stringify(getData(state), null, 2),
+    estate: state
   }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(App));
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToControlProps
+  
+)(withStyles(styles)(App));
