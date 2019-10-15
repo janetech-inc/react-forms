@@ -73,14 +73,13 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
     .catch(onError);
   }
 
-  
-
   function onUpdateCollection() {
     let data = JSON.parse(dataAsString);
     if (data != "" && collectionId !== "" && data.id == collectionId) {
 
-      headers: getHeaders()
-
+      axios.put(`${BASE_URL}/${data.id}`, data, { headers: getHeaders()})
+      .then(onUpdateSuccess)
+      .then(onError)
     }
   }
 
@@ -92,7 +91,15 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
     .catch(onError);
   }
 
+  function onUpdateSuccess(response: any) {
+    console.log(response);
+    if (response.status === 200 && response.data === 1) {
+      alert("Record updated")
+    }
+  }
+
   function onSuccess(response: any) {
+    console.log(response);
     let collection = response.data
     delete collection.looks;
     delete collection.designer
@@ -102,7 +109,7 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
 
   function onError(error: any) {
     console.log(error);
-    if (error.response.status === 401 || error.response.status === 403) {
+    if (error && error.response && error.response.status === 401 || error.response.status === 403) {
       cookies.authtoken = null;
       setAuthtoken(cookies.authtoken);
       alert("Refresh auth token");
