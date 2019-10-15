@@ -149,7 +149,7 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
           <Grid item sm={12}>
           
             <br/>
-            { authtoken !== "" && 
+            {
               <textarea rows={4} cols={100} onChange={event => saveAuthToken(event.target.value)} placeholder="Authorization Token"/>
             }
             <br/>
