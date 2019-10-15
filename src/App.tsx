@@ -109,7 +109,7 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
 
   function onError(error: any) {
     console.log(error);
-    if (error && error.response && error.response.status === 401 || error.response.status === 403) {
+    if ((error && error.response && error.response.status === 401) || (error && error.response && error.response.status === 403)) {
       cookies.authtoken = null;
       setAuthtoken(cookies.authtoken);
       alert("Refresh auth token");
