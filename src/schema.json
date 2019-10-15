@@ -8,9 +8,31 @@
       "type": "string",
       "maxLength": 200
     },
-    "designer": {
+    "designer_id": {
+      "type":"integer"
+    },
+    "per_row": {
+      "type":"integer",
+      "enum": [
+        1, 2, 3
+      ]
+    },
+    "dark_theme": {
+      "type":"integer",
+      "enum": [
+        1, 0
+      ]
+    },
+    "currency": {
       "type": "string",
-      "maxLength": 200
+      "maxLength": 4,
+      "enum": [
+        "USD",
+        "EUR",
+        "JPY",
+        "GBP",
+        "CHF"
+      ]
     },
     "season": {
       "type": "string",
