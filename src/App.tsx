@@ -31,6 +31,12 @@ const styles = createStyles({
   demoform: {
     margin: 'auto',
     padding: '1rem'
+  },
+  button: {
+    fontSize: '16px',
+    width: '150px',
+    height: '50px',
+    margin: '15px 30px'
   }
 });
 
@@ -163,13 +169,13 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
         </Grid>
       }
       { collectionId === "" && 
-        <button onClick={() => onCreateCollection()}>
+        <button onClick={() => onCreateCollection()} className={classes.button}>
           Create Collection
         </button>
       }
       {
         collectionId !== "" && 
-        <button onClick={() => onUpdateCollection()}>
+        <button onClick={() => onUpdateCollection()} className={classes.button}>
           Update Collection
         </button>
       }

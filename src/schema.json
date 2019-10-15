@@ -12,14 +12,27 @@
       "type":"integer"
     },
     "per_row": {
-      "type":"integer"
+      "type":"integer",
+      "enum": [
+        1, 2, 3
+      ]
     },
     "dark_theme": {
-      "type":"integer"
+      "type":"integer",
+      "enum": [
+        1, 0
+      ]
     },
     "currency": {
       "type": "string",
-      "maxLength": 4
+      "maxLength": 4,
+      "enum": [
+        "USD",
+        "EUR",
+        "JPY",
+        "GBP",
+        "CHF"
+      ]
     },
     "season": {
       "type": "string",
