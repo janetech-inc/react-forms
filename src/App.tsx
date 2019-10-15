@@ -134,7 +134,7 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
               <textarea rows={4} cols={100} onChange={event => saveAuthToken(event.target.value)} placeholder="Authorization Token"/>
             }
             <br/>
-            <input onChange={event => onLoadCollection(event.target.value)} placeholder="Collection Id" /> <button onClick={event => setButtonRefresh("refresh")} > Load Collection </button>
+            <input onChange={event => onLoadCollection(event.target.value)} placeholder="Collection Id" /> <button onClick={event => setButtonRefresh(`refresh ${event.timeStamp}`)} > Load Collection </button>
             <br/>
 
             <Typography variant={'h3'} className={classes.title}>
