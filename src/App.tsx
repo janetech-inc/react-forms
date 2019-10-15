@@ -68,22 +68,12 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
   function onCreateCollection() {
     var data = JSON.parse(dataAsString);
     data.active = false;
-
-    axios.post(`${BASE_URL}`, data, {
-      headers: getHeaders()
-    })
-    .then(function (response) {
-      console.log(response);
-      let collection = response.data
-      estate.jsonforms.core.data = collection;
-      setCollectionId(collection.id.toString());
-      
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-
+    axios.post(`${BASE_URL}`, data, { headers: getHeaders()})
+    .then(onSuccess)
+    .catch(onError);
   }
+
+  
 
   function onUpdateCollection() {
     let data = JSON.parse(dataAsString);
@@ -97,24 +87,26 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
   function onLoadCollection(cid: string) {
     if (cid === "" || cid === null) return;
 
-    axios.get(`${BASE_URL}/${cid}` , {
-      headers: getHeaders()
-    })
-    .then(function (response) {
-      let collection = response.data
-      delete collection.looks;
-      delete collection.designer
-      estate.jsonforms.core.data = collection;
-      setCollectionId(cid);
-    })
-    .catch(function (error) {
-      console.log(error);
-      if (error.response.status === 401 || error.response.status === 403) {
-        cookies.authtoken = null;
-        setAuthtoken(cookies.authtoken);
-        alert("Refresh auth token");
-      }
-    });
+    axios.get(`${BASE_URL}/${cid}`, { headers: getHeaders() })
+    .then(onSuccess)
+    .catch(onError);
+  }
+
+  function onSuccess(response: any) {
+    let collection = response.data
+    delete collection.looks;
+    delete collection.designer
+    estate.jsonforms.core.data = collection;
+    setCollectionId(collection.id.toString());
+  }
+
+  function onError(error: any) {
+    console.log(error);
+    if (error.response.status === 401 || error.response.status === 403) {
+      cookies.authtoken = null;
+      setAuthtoken(cookies.authtoken);
+      alert("Refresh auth token");
+    }
   }
 
   function getHeaders() {
