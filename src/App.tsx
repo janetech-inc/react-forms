@@ -62,13 +62,15 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
   function onCreateCollection() {
     var data = JSON.parse(dataAsString);
     data.active = false;
-    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.authtoken}` }
 
     axios.post(`${BASE_URL}`, data, {
-      headers: headers
+      headers: getHeaders()
     })
     .then(function (response) {
       console.log(response);
+      let collection = response.data
+      estate.jsonforms.core.data = collection;
+      setCollectionId(collection.id.toString());
       
     })
     .catch(function (error) {
@@ -77,19 +79,27 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
 
   }
 
-  function onLoadCollection(collectionId: String) {
-    if (collectionId === "" || collectionId === null) return;
+  function onUpdateCollection() {
+    let data = JSON.parse(dataAsString);
+    if (data != "" && collectionId !== "" && data.id == collectionId) {
 
-    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.authtoken}` }
+      headers: getHeaders()
 
-    axios.get(`${BASE_URL}/${collectionId}` , {
-      headers: headers
+    }
+  }
+
+  function onLoadCollection(cid: string) {
+    if (cid === "" || cid === null) return;
+
+    axios.get(`${BASE_URL}/${cid}` , {
+      headers: getHeaders()
     })
     .then(function (response) {
       let collection = response.data
       delete collection.looks;
       delete collection.designer
       estate.jsonforms.core.data = collection;
+      setCollectionId(cid);
     })
     .catch(function (error) {
       console.log(error);
@@ -99,6 +109,10 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
         alert("Refresh auth token");
       }
     });
+  }
+
+  function getHeaders() {
+    return  { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.authtoken}` }
   }
 
   return (
@@ -148,9 +162,15 @@ const App = ({ estate, classes, dataAsString }: AppProps) => {
           </Grid>
         </Grid>
       }
-      { 
+      { collectionId === "" && 
         <button onClick={() => onCreateCollection()}>
           Create Collection
+        </button>
+      }
+      {
+        collectionId !== "" && 
+        <button onClick={() => onUpdateCollection()}>
+          Update Collection
         </button>
       }
     </Fragment>
